@@ -94,49 +94,12 @@
     </div>
   </div>
 
-  <script>
-    const chatbox = document.getElementById('chatbox');
-
-    async function sendMessage() {
-      const userText = document.getElementById('userText').value.trim();
-      if (!userText) return;
-
-      appendMessage(userText, "user");
-      document.getElementById('userText').value = "";
-
-      try {
-        const response = await fetch("https://cloud.flowiseai.com/api/v1/chatflow/message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chatflowId: "8c25f665-4c29-4915-a29d-7f915e6cd8ab", // Replace with your chatflow ID
-            message: userText,
-          }),
-        });
-
-        const data = await response.json();
-        const botReply = data.text || data.response || "Sorry, I didn’t get that.";
-
-        appendMessage(botReply, "bot");
-      } catch (error) {
-        appendMessage("Oops! Something went wrong.", "bot");
-        console.error(error);
-      }
-    }
-
-    function appendMessage(message, sender) {
-      const msg = document.createElement('div');
-      msg.className = 'message ' + sender;
-      msg.textContent = message;
-      chatbox.appendChild(msg);
-      chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    document.getElementById('userText').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
-    });
+<script type="module">
+    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+    Chatbot.init({
+      chatflowid: "8c25f665-4c29-4915-a29d-7f915e6cd8ab", // <-- Replace with your real ID
+      apiHost: "https://cloud.flowiseai.com",
+    })
   </script>
 </body>
 </html>
