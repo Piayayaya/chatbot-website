@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Modern Chatbot</title>
+  <title>ChatBites - Restaurant Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #667eea, #764ba2);
-      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      color: #333;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
     .chat-container {
-      background-color: #1e1e2f;
+      background-color: #fff8ef;
       border-radius: 12px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -28,32 +28,33 @@
     h2 {
       margin-top: 0;
       text-align: center;
-      color: #ffd369;
+      color: #d35400;
     }
     #chatbox {
       flex: 1;
-      background-color: #2e2e3e;
+      background-color: #fff3e0;
       border-radius: 8px;
       padding: 10px;
       margin-bottom: 10px;
       overflow-y: auto;
       max-height: 300px;
+      border: 1px solid #f1c40f;
     }
     .message {
-      margin: 5px 0;
-      padding: 8px 12px;
+      margin: 6px 0;
+      padding: 10px 14px;
       border-radius: 8px;
       max-width: 80%;
       word-wrap: break-word;
     }
     .user {
-      background-color: #ffd369;
-      color: #000;
+      background-color: #f39c12;
+      color: #fff;
       align-self: flex-end;
     }
     .bot {
-      background-color: #393e46;
-      color: #fff;
+      background-color: #ecf0f1;
+      color: #2c3e50;
       align-self: flex-start;
     }
     #userInput {
@@ -64,30 +65,31 @@
       flex: 1;
       padding: 10px;
       border-radius: 8px;
-      border: none;
+      border: 1px solid #ccc;
       outline: none;
     }
     button {
       padding: 10px 16px;
       border: none;
       border-radius: 8px;
-      background-color: #ffd369;
-      color: #000;
+      background-color: #d35400;
+      color: #fff;
       font-weight: bold;
       cursor: pointer;
-      user-select: none;
     }
     button:hover {
-      background-color: #ffb347;
+      background-color: #e67e22;
     }
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <h2>💬 Chat with Me!</h2>
-    <div id="chatbox"></div>
+    <h2>🍽️ Welcome to ChatBites!</h2>
+    <div id="chatbox">
+      <div class="message bot">Hi! I'm your restaurant assistant. Ask me about the menu, hours, or make a reservation. 😊</div>
+    </div>
     <div id="userInput">
-      <input type="text" id="userText" placeholder="Type your message..." autocomplete="off" />
+      <input type="text" id="userText" placeholder="Type something..." autocomplete="off" />
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
@@ -99,7 +101,7 @@
       const userText = document.getElementById('userText').value.trim();
       if (!userText) return;
 
-      appendMessage("You: " + userText, "user");
+      appendMessage(userText, "user");
       document.getElementById('userText').value = "";
 
       try {
@@ -107,18 +109,17 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            chatflowId: "8c25f665-4c29-4915-a29d-7f915e6cd8ab", // <=== replace with your chatflow ID
+            chatflowId: "8c25f665-4c29-4915-a29d-7f915e6cd8ab", // Replace with your chatflow ID
             message: userText,
           }),
         });
+
         const data = await response.json();
+        const botReply = data.text || data.response || "Sorry, I didn’t get that.";
 
-        // Adjust below if your response JSON structure differs
-        const botReply = data.text || data.response || "Sorry, no reply from bot.";
-
-        appendMessage("Bot: " + botReply, "bot");
+        appendMessage(botReply, "bot");
       } catch (error) {
-        appendMessage("Bot: Error getting reply.", "bot");
+        appendMessage("Oops! Something went wrong.", "bot");
         console.error(error);
       }
     }
@@ -131,7 +132,6 @@
       chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    // Optional: let user press Enter to send message
     document.getElementById('userText').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         sendMessage();
